@@ -35,6 +35,28 @@ namespace ProyectoPrueba.Rules.Rules
             }
         }
 
+        public IList<Inscripcion> GetAllByAlumno(int idAlumno)
+        {
+            try
+            {
+                var alumno = _dbContext.Alumnos.Find(idAlumno);
+                if(alumno != null)
+                {
+                    return alumno.Inscripciones;
+                }
+                else
+                {
+                    throw new Exception("No existe alumno");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+        }
+
         public void Insert(Inscripcion inscripcion, int idAlumno)
         {
             try

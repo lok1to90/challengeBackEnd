@@ -24,18 +24,17 @@ namespace ProyectoPrueba.Controllers
             _inscripcionRules = inscripcionRules;
         }
 
+        /// <summary>
+        /// Obtiene todas las materias en donde se anoto
+        /// </summary>
+        /// <returns>Inscripciones</returns>
         [HttpGet]
-        public IHttpActionResult Get()
+        [Route("alumno/{idAlumno}")]
+        public IHttpActionResult GetAllByAlumno(int idAlumno)
         {
             try
             {
-                var inscripcions = _inscripcionRules.GetAll(); ;
-                if (inscripcions.Count() == 0)
-                {
-                    return NotFound();
-                }
-
-                return Ok(_mapper.Map<List<InscripcionModel>>(inscripcions));
+                return Ok(_mapper.Map<List<InscripcionModel>>(_inscripcionRules.GetAllByAlumno(idAlumno)));
             }
             catch (Exception ex)
             {
@@ -45,7 +44,6 @@ namespace ProyectoPrueba.Controllers
         }
 
         [HttpGet]
-        // GET: api/inscripcion/5
         public IHttpActionResult Get(int id)
         {
             try
@@ -92,7 +90,9 @@ namespace ProyectoPrueba.Controllers
 
         }
 
-
+        /// <summary>
+        /// Finalizar el cursado de una materia
+        /// </summary>
         [HttpPost]
         public IHttpActionResult PostFinalizarCursado(int idInscripcion, int nota)
         {
@@ -108,41 +108,5 @@ namespace ProyectoPrueba.Controllers
 
         }
 
-        [HttpPut]
-        // PUT: api/inscripcion/5
-        public IHttpActionResult Put(InscripcionModel inscripcion)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return BadRequest();
-
-                _inscripcionRules.Update(_mapper.Map<Inscripcion>(inscripcion));
-                return Ok(inscripcion);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-
-        }
-
-        [HttpDelete]
-        // DELETE: api/inscripcion/5
-        public IHttpActionResult Delete(int id)
-        {
-            try
-            {
-                if (id <= 0)
-                    return BadRequest();
-
-                _inscripcionRules.Delete(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
     }
 }

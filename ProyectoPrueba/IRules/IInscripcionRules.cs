@@ -10,5 +10,6 @@ namespace ProyectoPrueba.Rules.IRules
     {
         void Insert(Inscripcion inscripcion, int idAlumno);
         void FinalizarCursado(int idInscripcion, int nota);
+        IList<Inscripcion> GetAllByAlumno(int idAlumno);
     }
 }
