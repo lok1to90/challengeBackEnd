@@ -12,10 +12,15 @@ namespace ProyectoPrueba.Mapper
     {
         public ProyectoPruebaProfile()
         {
-            CreateMap<Alumno, AlumnoModel>().ReverseMap();
-            CreateMap<Carrera, CarreraModel>().ReverseMap();
-            CreateMap<Inscripcion, InscripcionModel>().ReverseMap();
-            CreateMap<Materia, MateriaModel>().ReverseMap();
+            CreateMap<Alumno, AlumnoModel>()
+                .ReverseMap();
+            CreateMap<Carrera, CarreraModel>()
+                .ReverseMap();
+            CreateMap<Inscripcion, InscripcionModel>()
+                .ForMember(x=>x.MateriaId, o => o.MapFrom(j => j.Materia.Id))
+                .ReverseMap();
+            CreateMap<Materia, MateriaModel>()
+                .ReverseMap();
         }
     }
 }

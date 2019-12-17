@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ProyectoPrueba.Domain;
+using ProyectoPrueba.Model;
 using ProyectoPrueba.Rules.IRules;
 using System;
 using System.Collections.Generic;
@@ -6,44 +8,150 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace ProyectoPrueba.Controllers
 {
+    /// <summary>
+    /// Contiene todos los metodos para manejo de materia.
+    /// </summary>
+    [RoutePrefix("materia")]
     public class MateriaController : ApiController
     {
         private readonly IMapper _mapper;
         private readonly IMateriaRules _materiaRules;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <param name="materiaRules"></param>
         public MateriaController(IMapper mapper, IMateriaRules materiaRules)
         {
             _mapper = mapper;
             _materiaRules = materiaRules;
         }
-        // GET: api/Materia
-        public IEnumerable<string> Get()
+
+        /// <summary>
+        /// Obtiene todos las materias.
+        /// </summary>
+        /// <returns>Lista de todos las materias</returns>
+        [ResponseType(typeof(IEnumerable<MateriaModel>))]
+        [HttpGet]
+        public IHttpActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var materias = _materiaRules.GetAll(); ;
+                if (materias.Count() == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(_mapper.Map<List<MateriaModel>>(materias));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // GET: api/Materia/5
-        public string Get(int id)
+        /// <summary>
+        /// Obtiene una materia por ID
+        /// </summary>
+        /// <param name="id">Id de materia.</param>
+        /// <returns>Una materia</returns>
+        [ResponseType(typeof(MateriaModel))]
+        [HttpGet]
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest();
+                }
+                var materia = _materiaRules.GetById(id);
+                if (materia == null)
+                {
+                    return NotFound();
+                }
+                return Ok(_mapper.Map<MateriaModel>(materia));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // POST: api/Materia
-        public void Post([FromBody]string value)
+        /// <summary>
+        /// Guarda una materia
+        /// </summary>
+        /// <returns>Materia guardada</returns>
+        [ResponseType(typeof(MateriaModel))]
+        [HttpPost]
+        public IHttpActionResult Post(MateriaModel materia)
         {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                _materiaRules.Insert(_mapper.Map<Materia>(materia));
+                return Ok(materia);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // PUT: api/Materia/5
-        public void Put(int id, [FromBody]string value)
+        /// <summary>
+        /// Actualiza una materia
+        /// </summary>
+        /// <returns>Materia actualizada</returns>
+        [ResponseType(typeof(MateriaModel))]
+        [HttpPut]
+        public IHttpActionResult Put(MateriaModel materia)
         {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                _materiaRules.Update(_mapper.Map<Materia>(materia));
+                return Ok(materia);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
+        }
+        
+        /// <summary>
+        /// Elimina una materia por ID
+        /// </summary>
+        /// <param name="id">Id de materia.</param>
+        [HttpDelete]
+        public IHttpActionResult Delete(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest();
+
+                _materiaRules.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
-        // DELETE: api/Materia/5
-        public void Delete(int id)
-        {
-        }
     }
 }

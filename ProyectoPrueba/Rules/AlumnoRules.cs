@@ -1,4 +1,5 @@
-﻿using ProyectoPrueba.Domain;
+﻿using log4net;
+using ProyectoPrueba.Domain;
 using ProyectoPrueba.IRules;
 using ProyectoPrueba.ProyectoDbContext;
 using ProyectoPrueba.Rules.IRules;
@@ -10,7 +11,7 @@ namespace ProyectoPrueba.Rules.Rules
 {
     public class AlumnoRules : GenericRules<Alumno>, IAlumnoRules
     {
-        public AlumnoRules(ProyectoPruebaDbContext dbContext) : base(dbContext)
+        public AlumnoRules(ProyectoPruebaDbContext dbContext, ILog logger) : base(dbContext, logger)
         {
 
         }

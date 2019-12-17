@@ -8,5 +8,7 @@ namespace ProyectoPrueba.Rules.IRules
 {
     public interface IInscripcionRules : IGenericRules<Inscripcion>
     {
+        void Insert(Inscripcion inscripcion, int idAlumno);
+        void FinalizarCursado(int idInscripcion, int nota);
     }
 }

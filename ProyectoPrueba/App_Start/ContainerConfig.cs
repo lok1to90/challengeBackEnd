@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
 using AutoMapper;
+using log4net;
 using ProyectoPrueba.Mapper;
 using ProyectoPrueba.ProyectoDbContext;
 using ProyectoPrueba.Rules.IRules;
@@ -23,6 +24,8 @@ namespace ProyectoPrueba.App_Start
             builder.RegisterInstance(config.CreateMapper())
                 .As<IMapper>()
                 .SingleInstance();
+
+            builder.RegisterModule(new LoggingModule());
 
             builder.RegisterType<ProyectoPruebaDbContext>()
                 .InstancePerRequest();

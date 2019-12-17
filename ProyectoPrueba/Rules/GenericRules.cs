@@ -1,4 +1,5 @@
-﻿using ProyectoPrueba.IRules;
+﻿using log4net;
+using ProyectoPrueba.IRules;
 using ProyectoPrueba.ProyectoDbContext;
 using System;
 using System.Collections.Generic;
@@ -11,35 +12,83 @@ namespace ProyectoPrueba.Rules
     public class GenericRules<T> : IGenericRules<T> where T : class
     {
         private readonly ProyectoPruebaDbContext _db;
-        public GenericRules(ProyectoPruebaDbContext db)
+        private readonly ILog _logger;
+
+        public GenericRules(ProyectoPruebaDbContext db, ILog logger)
         {
             _db = db;
+            _logger = logger;
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
-            return _db.Set<T>().ToList();
+            try
+            {
+                return _db.Set<T>().ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+
         }
-        public T GetById(object id)
+        public virtual T GetById(object id)
         {
-            return _db.Set<T>().Find(id);
+            try
+            {
+                return _db.Set<T>().Find(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+
         }
-        public void Insert(T obj)
+        public virtual void Insert(T obj)
         {
-             _db.Set<T>().Add(obj);
-             _db.SaveChanges();
+            try
+            {
+                _db.Set<T>().Add(obj);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+
         }
-        public void Update(T obj)
+        public virtual void Update(T obj)
         {
-            _db.Set<T>().Attach(obj);
-            _db.Entry(obj).State = EntityState.Modified;
-            _db.SaveChanges();
+            try
+            {
+                _db.Set<T>().Attach(obj);
+                _db.Entry(obj).State = EntityState.Modified;
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+
         }
-        public void Delete(object id)
+        public virtual void Delete(object id)
         {
-            T existing = _db.Set<T>().Find(id);
-            _db.Set<T>().Remove(existing);
-            _db.SaveChanges();
+            try
+            {
+                T existing = _db.Set<T>().Find(id);
+                _db.Set<T>().Remove(existing);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+
         }
     }
 

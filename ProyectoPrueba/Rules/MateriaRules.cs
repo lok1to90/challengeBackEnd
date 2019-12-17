@@ -1,4 +1,5 @@
-﻿using ProyectoPrueba.Domain;
+﻿using log4net;
+using ProyectoPrueba.Domain;
 using ProyectoPrueba.ProyectoDbContext;
 using ProyectoPrueba.Rules.IRules;
 using System;
@@ -9,7 +10,7 @@ namespace ProyectoPrueba.Rules.Rules
 {
     public class MateriaRules : GenericRules<Materia>, IMateriaRules
     {
-        public MateriaRules(ProyectoPruebaDbContext dbContext) : base(dbContext)
+        public MateriaRules(ProyectoPruebaDbContext dbContext, ILog logger) : base(dbContext, logger)
         {
 
         }

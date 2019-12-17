@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ProyectoPrueba.Domain;
+using ProyectoPrueba.Model;
 using ProyectoPrueba.Rules.IRules;
 using System;
 using System.Collections.Generic;
@@ -6,9 +8,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace ProyectoPrueba.Controllers
 {
+    [RoutePrefix("inscripcion")]
     public class InscripcionController : ApiController
     {
         private readonly IMapper _mapper;
@@ -19,31 +23,126 @@ namespace ProyectoPrueba.Controllers
             _mapper = mapper;
             _inscripcionRules = inscripcionRules;
         }
-        // GET: api/Inscripcion
-        public IEnumerable<string> Get()
+
+        [HttpGet]
+        public IHttpActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var inscripcions = _inscripcionRules.GetAll(); ;
+                if (inscripcions.Count() == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(_mapper.Map<List<InscripcionModel>>(inscripcions));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // GET: api/Inscripcion/5
-        public string Get(int id)
+        [HttpGet]
+        // GET: api/inscripcion/5
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest();
+                }
+                var inscripcion = _inscripcionRules.GetById(id);
+                if (inscripcion == null)
+                {
+                    return NotFound();
+                }
+                return Ok(_mapper.Map<InscripcionModel>(inscripcion));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // POST: api/Inscripcion
-        public void Post([FromBody]string value)
+        /// <summary>
+        /// Guarda una inscripcion a un alumno
+        /// </summary>
+        /// <returns>Inscripcion guardada</returns>
+        [ResponseType(typeof(InscripcionModel))]
+        [HttpPost]
+        [Route("alumno/{idAlumno}")]
+        public IHttpActionResult Post(InscripcionModel inscripcion, int idAlumno)
         {
+            try
+            {
+                if (!ModelState.IsValid || inscripcion == null)
+                    return BadRequest();
+
+                _inscripcionRules.Insert(_mapper.Map<Inscripcion>(inscripcion), idAlumno);
+                return Ok(inscripcion);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // PUT: api/Inscripcion/5
-        public void Put(int id, [FromBody]string value)
+
+        [HttpPost]
+        public IHttpActionResult PostFinalizarCursado(int idInscripcion, int nota)
         {
+            try
+            {
+                _inscripcionRules.Insert(_mapper.Map<Inscripcion>(idInscripcion), nota);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
         }
 
-        // DELETE: api/Inscripcion/5
-        public void Delete(int id)
+        [HttpPut]
+        // PUT: api/inscripcion/5
+        public IHttpActionResult Put(InscripcionModel inscripcion)
         {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                _inscripcionRules.Update(_mapper.Map<Inscripcion>(inscripcion));
+                return Ok(inscripcion);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
+        }
+
+        [HttpDelete]
+        // DELETE: api/inscripcion/5
+        public IHttpActionResult Delete(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest();
+
+                _inscripcionRules.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

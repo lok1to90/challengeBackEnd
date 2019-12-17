@@ -1,4 +1,5 @@
-﻿using ProyectoPrueba.Domain;
+﻿using log4net;
+using ProyectoPrueba.Domain;
 using ProyectoPrueba.ProyectoDbContext;
 using ProyectoPrueba.Rules.IRules;
 using System;
@@ -9,8 +10,44 @@ namespace ProyectoPrueba.Rules.Rules
 {
     public class InscripcionRules : GenericRules<Inscripcion>, IInscripcionRules
     {
-        public InscripcionRules(ProyectoPruebaDbContext dbContext) : base(dbContext)
+        private readonly ProyectoPruebaDbContext _dbContext;
+        private readonly ILog _logger;
+
+        public InscripcionRules(ProyectoPruebaDbContext dbContext, ILog logger) : base(dbContext, logger)
         {
+            _dbContext = dbContext;
+            _logger = logger;
+        }
+
+        public void FinalizarCursado(int idInscripcion, int nota)
+        {
+            try
+            {
+                var inscripcion = _dbContext.Inscripciones.Find(idInscripcion);
+                inscripcion.Estado = Enums.CursadoEstadoEnum.FINALIZADO;
+                inscripcion.Nota = nota;
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+        }
+
+        public void Insert(Inscripcion inscripcion, int idAlumno)
+        {
+            try
+            {
+                var alumno = _dbContext.Alumnos.Find(idAlumno);
+                alumno.Inscripciones.Add(inscripcion);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
 
         }
     }
