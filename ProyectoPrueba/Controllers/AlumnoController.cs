@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ProyectoPrueba.Domain;
+using ProyectoPrueba.Model;
 using ProyectoPrueba.Rules.IRules;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Web.Http;
 
 namespace ProyectoPrueba.Controllers
 {
+    [RoutePrefix("Alumno")]
     public class AlumnoController : ApiController
     {
         private readonly IMapper _mapper;
@@ -20,33 +22,76 @@ namespace ProyectoPrueba.Controllers
             _mapper = mapper;
             _alumnoRules = alumnoRules;
         }
-        // GET: api/Alumno
-        //public IEnumerable<Alumno> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        
+        [HttpGet]
+        public IHttpActionResult Get()
+        {
+            var alumnos = _alumnoRules.GetAll(); ;
 
+            if (alumnos.Count() == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(alumnos);
+        }
+
+        [HttpGet]
         // GET: api/Alumno/5
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+            Alumno alumno = _alumnoRules.GetById(id);
+            if (alumno == null)
+            {
+                return NotFound();
+            }
+            return Ok(alumno);
         }
 
+        [HttpPost]
         // POST: api/Alumno
-        public IHttpActionResult Insert(Alumno alumno)
+        public IHttpActionResult Post(AlumnoModel alumno)
         {
-            _alumnoRules.Insert(alumno);
-            return Ok();
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            try
+            {
+                _alumnoRules.Insert(_mapper.Map<Alumno>(alumno));
+                return Ok(alumno);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }  
+            
         }
 
+        [HttpPut]
         // PUT: api/Alumno/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(AlumnoModel alumno)
         {
+            if (!ModelState.IsValid)
+                return BadRequest("Not a valid model");
+
+            _alumnoRules.Update(_mapper.Map<Alumno>(alumno));
+            return Ok(alumno);
         }
 
+        [HttpDelete]
         // DELETE: api/Alumno/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            _alumnoRules.Delete(id);
+            return Ok();
+
         }
     }
 }
