@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  proyectoprueba:
+    image: ${DOCKER_REGISTRY-}proyectoprueba
+    build:
+      context: .\ProyectoPrueba
+      dockerfile: Dockerfile
