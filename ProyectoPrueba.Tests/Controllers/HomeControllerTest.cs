@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using ProyectoPrueba;
 using ProyectoPrueba.Controllers;
 using ProyectoPrueba.Domain;
 using ProyectoPrueba.Model;
+using ProyectoPrueba.Rules.IRules;
 
 namespace ProyectoPrueba.Tests.Controllers
 {

@@ -567,11 +567,22 @@
             </summary>
             <param name="id">Id de carrera.</param>
         </member>
+        <member name="M:ProyectoPrueba.Controllers.InscripcionController.GetAllByAlumno(System.Int32)">
+            <summary>
+            Obtiene todas las materias en donde se anoto
+            </summary>
+            <returns>Inscripciones</returns>
+        </member>
         <member name="M:ProyectoPrueba.Controllers.InscripcionController.Post(ProyectoPrueba.Model.InscripcionModel,System.Int32)">
             <summary>
             Guarda una inscripcion a un alumno
             </summary>
             <returns>Inscripcion guardada</returns>
+        </member>
+        <member name="M:ProyectoPrueba.Controllers.InscripcionController.PostFinalizarCursado(System.Int32,System.Int32)">
+            <summary>
+            Finalizar el cursado de una materia
+            </summary>
         </member>
         <member name="T:ProyectoPrueba.Controllers.MateriaController">
             <summary>
